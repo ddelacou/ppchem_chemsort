@@ -5,7 +5,6 @@ from rdkit import Chem
 import pubchempy as pcp # type: ignore
 from rdkit import Chem
 from typing import Optional, List, Dict, Any, Union, Tuple
-import math
 
 from typing import List
 
@@ -273,10 +272,11 @@ def get_mp_bp(compound_name: str) -> Tuple[Optional[float], Optional[float], Opt
         search_sections(data['Record']['Section'])
 
     # Calculate average temperatures in Celsius and Fahrenheit
-    avg_mp_celsius = math.ceil(sum(mp_celsius) / len(mp_celsius)) if mp_celsius else None
-    avg_bp_celsius = math.ceil(sum(bp_celsius) / len(bp_celsius)) if bp_celsius else None
-    avg_mp_fahrenheit = math.ceil(sum(mp_fahrenheit) / len(mp_fahrenheit)) if mp_fahrenheit else None
-    avg_bp_fahrenheit = math.ceil(sum(bp_fahrenheit) / len(bp_fahrenheit)) if bp_fahrenheit else None
+    avg_mp_celsius = sum(mp_celsius) / len(mp_celsius) if mp_celsius else None
+    avg_bp_celsius = sum(bp_celsius) / len(bp_celsius) if bp_celsius else None
+    avg_mp_fahrenheit = sum(mp_fahrenheit) / len(mp_fahrenheit) if mp_fahrenheit else None
+    avg_bp_fahrenheit = sum(bp_fahrenheit) / len(bp_fahrenheit) if bp_fahrenheit else None
+    
 
     return avg_mp_celsius, avg_bp_celsius, avg_mp_fahrenheit, avg_bp_fahrenheit
 
@@ -471,31 +471,10 @@ def initialize_storage_groups() -> Dict[str, Dict[str, List[Dict[str, Any]]]]:
         "nitric_acid": default_group()
     }
 
-def chemsort_multiple_order_3(compounds: List[Dict[str, Any]], storage_groups: Dict[str, Dict[str, List[Dict[str, Any]]]]) -> Dict[str, Dict[str, List[Dict[str, Any]]]]:
-    """
-    Sorts a list of chemical compounds into appropriate storage groups based on 
-    GHS pictograms, hazard statements, physical state, and acid/base classification.
-
-    The function processes compounds by assigning them into predefined groups 
-    if they are compatible with it and the compounds in it.
-    If a compound does not any known group, it is either added to a matching 
-    custom group or a new custom group is created.
-
-    Parameters:
-        compounds (List[Dict[str, Any]]): 
-            A list of dictionaries where each dictionary represents a compound with keys like 
-            'name', 'sorted_pictograms', 'hazard_statements', 'acid_base_class', and 'state_room_temp'.
-        
-        storage_groups (Dict[str, Dict[str, List[Dict[str, Any]]]]): 
-            A dictionary representing existing storage groups. Each key is a group name, 
-            mapping to another dictionary with keys 'solid', 'liquid', and 'gas', each containing 
-            a list of compatible compounds.
-            Empty at firt use of the function.
-
-    Returns:
-        Dict[str, Dict[str, List[Dict[str, Any]]]]: 
-            Updated dictionary of storage groups with the compounds sorted into the appropriate categories.
-    """
+def chemsort_multiple_order_3(
+    compounds: List[Dict[str, Any]],
+    storage_groups: Dict[str, Dict[str, List[Dict[str, Any]]]]
+) -> Dict[str, Dict[str, List[Dict[str, Any]]]]:
     phrases_hazard = [
         "may cause genetic defects", "cancer", "may damage fertility", "causes damage to organs"
     ]
