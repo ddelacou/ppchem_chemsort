@@ -555,7 +555,7 @@ def chemsort_multiple_order_3(compounds: List[Dict[str, Any]], storage_groups: D
         chemical = compound["name"]
         sorted_pictograms = compound["sorted_pictograms"]
         hazard_statements = compound["hazard_statements"]
-        acid_base_class = compound["acid_base_class"].lower()
+        acid_base_class = compound["acid_base_class"]
         state = compound["state_room_temp"]
         state_key = 'liquid' if 'liquid' in state else 'solid' if 'solid' in state else 'gas'
 
